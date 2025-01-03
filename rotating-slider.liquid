@@ -1,0 +1,128 @@
+<div class="rotating-slider">
+  <div class="slider-wrapper">
+    {% for block in section.blocks %}
+      <div class="slider-item">
+        <a href="{{ block.settings.link }}" target="_blank"> <!-- Added link -->
+          <img src="{{ block.settings.image | img_url: 'large' }}" alt="{{ block.settings.alt_text }}">
+        </a>
+      </div>
+    {% endfor %}
+    <!-- Duplicate the images for the looping effect -->
+    {% for block in section.blocks %}
+      <div class="slider-item">
+        <a href="{{ block.settings.link }}" target="_blank"> <!-- Added link -->
+          <img src="{{ block.settings.image | img_url: 'large' }}" alt="{{ block.settings.alt_text }}">
+        </a>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  /* Changes By David - Logo Display  */
+
+.rotating-slider {
+  overflow: hidden;
+  margin: 0 auto;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+@media screen and (max-width: 1360px) {
+  .rotating-slider {
+    width: 95%;
+  }
+}
+
+@media screen and (max-width: 760px) {
+  .rotating-slider {
+    width: 90%;
+  }
+}
+
+.slider-wrapper {
+  display: flex;
+  animation: scroll-left linear infinite;
+  will-change: transform;
+  padding: 30px 0px;
+  width: max-content;
+  /* Ensure the width is large enough to handle the total scroll width */
+}
+
+.slider-item {
+  flex: 0 0 auto; /* Change this to auto to ensure each item is its natural width */
+  width: 150px; /* Adjust this width as needed */
+  padding: 0 30px; /* Adjust spacing between logos */
+  margin: 0px 90px;
+}
+
+.slider-item img {
+  display: block;
+  max-height: 150px; /* Adjust as needed */
+  max-width: 150px; /* Adjust as needed */
+}
+
+@keyframes scroll-left {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-100%); /* Change this to -100% to handle full width of the slider items */
+  }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  let sliderWrapper = document.querySelector('.slider-wrapper');
+  let sliderSpeed = {{ section.settings.slider_speed | default: 10 }};
+  
+  sliderWrapper.style.animationDuration = `${sliderSpeed}s`;
+});
+
+</script>
+
+{% schema %}
+{
+  "name": "Rotating Image Slider",
+  "settings": [
+     {
+      "type": "range",
+      "id": "slider_speed",
+      "label": "Slider Speed (Seconds)",
+      "min": 5,
+      "max": 100,
+      "default": 10
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Logo",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Upload Logo"
+        },
+        {
+          "type": "text",
+          "id": "alt_text",
+          "label": "Alt Text"
+        },
+        {
+          "type": "url",  // Added link type
+          "id": "link",
+          "label": "Image Link"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Rotating Image Slider",
+      "category": "Custom"
+    }
+  ],
+  "max_blocks": 50 
+}
+{% endschema %}
